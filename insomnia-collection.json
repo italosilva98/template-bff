@@ -93,6 +93,55 @@
       "description": "Testa o cenário 404.\n\nO WireMock está configurado para retornar 404 quando o id for 'not-found'.\n\nResposta esperada (404):\n{\n  \"timestamp\": \"...\",\n  \"status\": 404,\n  \"error\": \"RESOURCE_NOT_FOUND\",\n  \"message\": \"Example not found: not-found\",\n  \"path\": \"/api/v1/examples/not-found\",\n  \"correlationId\": \"...\"\n}"
     },
     {
+      "_id": "req_example_create",
+      "_type": "request",
+      "parentId": "fld_examples",
+      "name": "POST example (criar)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/v1/examples",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" },
+        { "name": "X-Correlation-Id", "value": "{{ correlation_id }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Widget Example\",\n  \"description\": \"Um widget de exemplo\",\n  \"active\": true\n}"
+      },
+      "description": "Cria um novo Example.\n\nFluxo: ExampleController → CreateExampleUseCase → ExampleApiClient → ExampleMapper → ExampleResponse\n\nResposta esperada (201):\n{\n  \"id\": \"42\",\n  \"name\": \"Widget Example\",\n  \"description\": \"Um widget de exemplo\",\n  \"active\": true\n}\n\nValidações:\n- name: obrigatório, 1–100 caracteres\n- description: opcional, máx 500 caracteres\n- active: default true"
+    },
+    {
+      "_id": "req_example_update",
+      "_type": "request",
+      "parentId": "fld_examples",
+      "name": "PUT example (atualizar)",
+      "method": "PUT",
+      "url": "{{ base_url }}/api/v1/examples/{{ example_id }}",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" },
+        { "name": "X-Correlation-Id", "value": "{{ correlation_id }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Widget Atualizado\",\n  \"description\": \"Descrição atualizada\",\n  \"active\": false\n}"
+      },
+      "description": "Atualiza um Example existente pelo ID.\n\nFluxo: ExampleController → UpdateExampleUseCase → ExampleApiClient → ExampleMapper → ExampleResponse\n\nResposta esperada (200):\n{\n  \"id\": \"42\",\n  \"name\": \"Widget Atualizado\",\n  \"description\": \"Descrição atualizada\",\n  \"active\": false\n}\n\nRetorna 404 se o recurso não existir."
+    },
+    {
+      "_id": "req_example_delete",
+      "_type": "request",
+      "parentId": "fld_examples",
+      "name": "DELETE example (remover)",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/v1/examples/{{ example_id }}",
+      "headers": [
+        { "name": "X-Correlation-Id", "value": "{{ correlation_id }}" }
+      ],
+      "body": {},
+      "description": "Remove um Example pelo ID.\n\nFluxo: ExampleController → DeleteExampleUseCase → ExampleApiClient\n\nResposta esperada (204 No Content): sem body.\n\nRetorna 404 se o recurso não existir."
+    },
+    {
       "_id": "req_example_circuit_breaker",
       "_type": "request",
       "parentId": "fld_examples",

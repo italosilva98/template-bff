@@ -1,0 +1,14 @@
+{
+  "mappings": [
+    {
+      "name": "delete-example",
+      "request": {
+        "method": "DELETE",
+        "urlPathPattern": "/examples/[^/]+"
+      },
+      "response": {
+        "status": 204
+      }
+    }
+  ]
+}

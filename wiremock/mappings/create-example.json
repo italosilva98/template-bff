@@ -1,0 +1,23 @@
+{
+  "mappings": [
+    {
+      "name": "create-example",
+      "request": {
+        "method": "POST",
+        "url": "/examples",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          }
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "example-response.json"
+      }
+    }
+  ]
+}

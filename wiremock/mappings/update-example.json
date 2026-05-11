@@ -1,0 +1,23 @@
+{
+  "mappings": [
+    {
+      "name": "update-example",
+      "request": {
+        "method": "PUT",
+        "urlPathPattern": "/examples/[^/]+",
+        "headers": {
+          "Content-Type": {
+            "contains": "application/json"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "bodyFileName": "example-response.json"
+      }
+    }
+  ]
+}
