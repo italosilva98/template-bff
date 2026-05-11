@@ -1,0 +1,238 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-05-11T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v9",
+  "resources": [
+    {
+      "_id": "wrk_bff_scaffold",
+      "_type": "workspace",
+      "name": "BFF Kotlin Scaffold",
+      "description": "Coleção de rotas do BFF Kotlin — gerada automaticamente"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_bff_scaffold",
+      "name": "Local",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "correlation_id": "local-dev-001",
+        "example_id": "42",
+        "example_id_not_found": "not-found"
+      }
+    },
+    {
+      "_id": "env_docker",
+      "_type": "environment",
+      "parentId": "wrk_bff_scaffold",
+      "name": "Docker Compose",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "correlation_id": "docker-dev-001",
+        "example_id": "42",
+        "example_id_not_found": "not-found"
+      }
+    },
+    {
+      "_id": "fld_examples",
+      "_type": "request_group",
+      "parentId": "wrk_bff_scaffold",
+      "name": "Examples"
+    },
+    {
+      "_id": "fld_actuator",
+      "_type": "request_group",
+      "parentId": "wrk_bff_scaffold",
+      "name": "Actuator"
+    },
+    {
+      "_id": "fld_docs",
+      "_type": "request_group",
+      "parentId": "wrk_bff_scaffold",
+      "name": "Documentação"
+    },
+    {
+      "_id": "req_example_get_by_id",
+      "_type": "request",
+      "parentId": "fld_examples",
+      "name": "GET example por ID (fluxo feliz)",
+      "method": "GET",
+      "url": "{{ base_url }}/api/v1/examples/{{ example_id }}",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "X-Correlation-Id",
+          "value": "{{ correlation_id }}"
+        }
+      ],
+      "body": {},
+      "description": "Retorna um Example pelo ID.\n\nFluxo: ExampleController → GetExampleUseCase → ExampleApiClient → ExampleMapper → ExampleResponse\n\nResposta esperada (200):\n{\n  \"id\": \"42\",\n  \"name\": \"Widget Example\",\n  \"description\": \"...\",\n  \"active\": true\n}"
+    },
+    {
+      "_id": "req_example_not_found",
+      "_type": "request",
+      "parentId": "fld_examples",
+      "name": "GET example por ID (404 not found)",
+      "method": "GET",
+      "url": "{{ base_url }}/api/v1/examples/{{ example_id_not_found }}",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "X-Correlation-Id",
+          "value": "{{ correlation_id }}"
+        }
+      ],
+      "body": {},
+      "description": "Testa o cenário 404.\n\nO WireMock está configurado para retornar 404 quando o id for 'not-found'.\n\nResposta esperada (404):\n{\n  \"timestamp\": \"...\",\n  \"status\": 404,\n  \"error\": \"RESOURCE_NOT_FOUND\",\n  \"message\": \"Example not found: not-found\",\n  \"path\": \"/api/v1/examples/not-found\",\n  \"correlationId\": \"...\"\n}"
+    },
+    {
+      "_id": "req_example_circuit_breaker",
+      "_type": "request",
+      "parentId": "fld_examples",
+      "name": "GET example por ID (circuit breaker — ID inválido para forçar erro)",
+      "method": "GET",
+      "url": "{{ base_url }}/api/v1/examples/force-error",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "X-Correlation-Id",
+          "value": "{{ correlation_id }}"
+        }
+      ],
+      "body": {},
+      "description": "Chame esta rota várias vezes para acionar o retry (3 tentativas) e eventualmente abrir o circuit breaker.\n\nConfigure um stub de erro no WireMock ou derrube o container example-api-mock antes de testar:\n  docker compose stop example-api-mock\n\nResposta quando o circuito abrir (503):\n{\n  \"status\": 503,\n  \"error\": \"SERVICE_UNAVAILABLE\",\n  \"message\": \"Service temporarily unavailable, please try again later\"\n}"
+    },
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "fld_actuator",
+      "name": "Health",
+      "method": "GET",
+      "url": "{{ base_url }}/actuator/health",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "description": "Health check geral da aplicação.\n\nInclui status do circuit breaker 'example-api' quando configurado com register-health-indicator: true.\n\nResposta esperada (200):\n{\n  \"status\": \"UP\",\n  \"components\": {\n    \"circuitBreakers\": { ... },\n    \"diskSpace\": { ... },\n    \"ping\": { ... }\n  }\n}"
+    },
+    {
+      "_id": "req_health_circuit_breakers",
+      "_type": "request",
+      "parentId": "fld_actuator",
+      "name": "Health — Circuit Breakers",
+      "method": "GET",
+      "url": "{{ base_url }}/actuator/health/circuitBreakers",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "description": "Estado detalhado de todos os circuit breakers registrados.\n\nEstados possíveis: CLOSED, OPEN, HALF_OPEN.\n\nRequer: management.endpoint.health.show-details=always (habilitado no perfil local)."
+    },
+    {
+      "_id": "req_info",
+      "_type": "request",
+      "parentId": "fld_actuator",
+      "name": "Info",
+      "method": "GET",
+      "url": "{{ base_url }}/actuator/info",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {}
+    },
+    {
+      "_id": "req_circuitbreakers",
+      "_type": "request",
+      "parentId": "fld_actuator",
+      "name": "Circuit Breakers (endpoint)",
+      "method": "GET",
+      "url": "{{ base_url }}/actuator/circuitbreakers",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "description": "Lista todas as instâncias de circuit breaker e seus estados/métricas.\n\nHabilitado em: management.endpoints.web.exposure.include: circuitbreakers"
+    },
+    {
+      "_id": "req_swagger_ui",
+      "_type": "request",
+      "parentId": "fld_docs",
+      "name": "Swagger UI (abrir no browser)",
+      "method": "GET",
+      "url": "{{ base_url }}/swagger-ui.html",
+      "headers": [],
+      "body": {},
+      "description": "Interface gráfica do Swagger. Abrir diretamente no browser:\n  http://localhost:8080/swagger-ui.html"
+    },
+    {
+      "_id": "req_openapi_json",
+      "_type": "request",
+      "parentId": "fld_docs",
+      "name": "OpenAPI JSON (v3/api-docs)",
+      "method": "GET",
+      "url": "{{ base_url }}/v3/api-docs",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "description": "Especificação OpenAPI 3 em formato JSON.\nPode ser importada no Postman, Insomnia ou qualquer ferramenta compatível com OAS3."
+    },
+    {
+      "_id": "req_wiremock_health",
+      "_type": "request",
+      "parentId": "fld_actuator",
+      "name": "WireMock — Health (mock direto)",
+      "method": "GET",
+      "url": "http://localhost:9090/__admin/health",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "description": "Verifica se o container WireMock está saudável.\nDisponível apenas quando rodando via Docker Compose.\n\nResposta esperada:\n{ \"status\": \"healthy\", \"version\": \"3.9.2\" }"
+    },
+    {
+      "_id": "req_wiremock_stub_direct",
+      "_type": "request",
+      "parentId": "fld_actuator",
+      "name": "WireMock — GET /examples/42 (stub direto)",
+      "method": "GET",
+      "url": "http://localhost:9090/examples/42",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "description": "Chama o WireMock diretamente (sem passar pelo BFF).\nÚtil para verificar se os stubs estão configurados corretamente.\n\nDisponível apenas quando rodando via Docker Compose."
+    }
+  ]
+}

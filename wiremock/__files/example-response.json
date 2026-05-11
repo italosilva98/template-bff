@@ -1,0 +1,6 @@
+{
+  "id": "42",
+  "name": "Widget Example",
+  "description": "Este é um exemplo de item retornado pela API externa mockada",
+  "status": "ACTIVE"
+}

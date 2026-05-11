@@ -1,0 +1,16 @@
+spring:
+  security:
+    user:
+      name: test
+      password: test
+
+external-apis:
+  example-api:
+    # porta será sobrescrita pelo WireMock em cada teste
+    base-url: http://localhost:${wiremock.server.port:9090}
+    timeout: 5s
+
+logging:
+  level:
+    root: WARN
+    itau.template.bff: INFO

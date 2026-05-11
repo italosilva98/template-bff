@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: bff
+  mvc:
+    problemdetails:
+      enabled: false
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-exception: false
+    include-binding-errors: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,circuitbreakers
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: always
+  health:
+    circuitbreakers:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: false
+
+logging:
+  # Formato definido em src/main/resources/logback-spring.xml
+  # — texto legível para perfis locais, JSON (Logstash) para prod
+  level:
+    root: INFO
+    itau.template.bff: INFO
+
+# Configurações de APIs externas — sobrescrever por ambiente
+external-apis:
+  example-api:
+    base-url: http://localhost:9090
+    timeout: 3s
+
+# Resilience4j — retry e circuit breaker por instância de client.
+# Para novos clients: criar uma instância com o mesmo nome usado em
+#   @Retry(name = "...") e @CircuitBreaker(name = "...") no client.
+resilience4j:
+  retry:
+    instances:
+      example-api:
+        max-attempts: 3
+        wait-duration: 500ms
+        retry-exceptions:
+          - itau.template.bff.shared.error.ExternalApiException
+        ignore-exceptions:
+          - itau.template.bff.shared.error.ResourceNotFoundException
+  circuitbreaker:
+    instances:
+      example-api:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: true

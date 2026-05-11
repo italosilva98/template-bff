@@ -1,0 +1,28 @@
+{
+  "name": "bff-kotlin-sdd-kit",
+  "description": "Kit SDD para gerar scaffold/template de BFF Kotlin com Spring Boot via GitHub Copilot",
+  "created_at": "2026-05-10T23:20:33.257545",
+  "recommended_generation_model": "Claude Sonnet 4.6",
+  "recommended_review_model": "GPT-5.4",
+  "files": [
+    ".github/copilot-instructions.md",
+    ".github/prompts/00-generate-project-from-spec.prompt.md",
+    ".github/prompts/01-bootstrap-project.prompt.md",
+    ".github/prompts/02-create-shared-foundation.prompt.md",
+    ".github/prompts/03-create-example-feature.prompt.md",
+    ".github/prompts/04-generate-tests.prompt.md",
+    ".github/prompts/05-create-documentation.prompt.md",
+    ".github/prompts/06-review-bff-architecture.prompt.md",
+    ".github/prompts/07-fix-review-findings.prompt.md",
+    ".github/prompts/create-controller-usecase-client.prompt.md",
+    ".github/prompts/create-new-client.prompt.md",
+    ".github/prompts/create-new-feature.prompt.md",
+    ".github/prompts/generate-tests.prompt.md",
+    ".github/prompts/review-security-observability.prompt.md",
+    "CHECKLIST.md",
+    "README.md",
+    "docs/adr/0001-architecture-clean-lite-by-feature.md",
+    "docs/architecture/clean-lite-by-feature.md",
+    "specs/bff-kotlin-scaffold/SPEC.md"
+  ]
+}

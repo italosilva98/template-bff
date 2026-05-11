@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Lê o nome da aplicação do application.yml para incluir nos logs JSON -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="bff"/>
+
+    <!--
+        Perfis: qualquer perfil que NÃO seja prod → log em texto legível.
+        Inclui: local, test, dev, staging (a menos que você queira JSON em staging).
+        Os níveis de log são controlados por logging.level.* em application.yml.
+    -->
+    <springProfile name="!prod">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{correlationId:-no-correlation-id}] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!--
+        Perfil prod → log em JSON estruturado (Logstash).
+
+        Campos incluídos automaticamente pelo LogstashEncoder:
+          @timestamp, @version, message, logger_name, thread_name, level, level_value
+          + todos os campos do MDC (ex: correlationId)
+          + customFields abaixo (app)
+
+        Exemplo de linha no stdout:
+          {"@timestamp":"2026-05-10T14:00:00.000Z","level":"INFO","correlationId":"abc-123","app":"bff","message":"..."}
+
+        Para ativar: SPRING_PROFILES_ACTIVE=prod java -jar app.jar
+    -->
+    <springProfile name="prod">
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"app":"${APP_NAME}"}</customFields>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>

@@ -1,0 +1,25 @@
+spring:
+  security:
+    user:
+      name: dev
+      password: dev
+      # ATENÇÃO: apenas para execução local, nunca em produção
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+external-apis:
+  example-api:
+    base-url: http://localhost:9090
+    timeout: 5s
+
+logging:
+  level:
+    root: INFO
+    itau.template.bff: DEBUG
